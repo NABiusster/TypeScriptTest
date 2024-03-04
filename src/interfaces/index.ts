@@ -1,0 +1,7 @@
+export * from "./IMovieRes"
+export * from "./IMovie"
+export * from "./IMovieDetails"
+export * from "./IGenre"
+export * from "./ICompany"
+export * from "./ICountry"
+export * from "./IGenresData"
