@@ -1,4 +1,3 @@
-import {IMovie} from "./IMovie";
 export interface IMovieRes<T> {
     page: number,
     results:T[],
