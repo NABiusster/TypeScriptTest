@@ -1,108 +1,80 @@
-import {
-    AppBar, Badge, Box, Button, IconButton, Toolbar, Typography,
-} from "@mui/material";
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeTwoToneIcon from '@mui/icons-material/LightModeTwoTone';
+import {AppBar, Box, Button, debounce, Toolbar} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import {useColorScheme} from "@mui/material/styles";
-import { useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
-import {Search, SearchIconWrapper, StyledInputBase} from "./styles";
+import {FlexBox, MaterialUISwitch, Search, SearchIconWrapper, StyledInputBase, TypographyAH5} from "./styles";
+import {useAppDispatch, useAppSelector} from "../../hooks";
+import {queryParamsActions} from "../../store";
+import {AuthUser} from "./AuthUser";
+import {UnAuthUser} from "./UnAuthUser";
 
 const Header = () => {
     const {mode, setMode} = useColorScheme();
-    const navigate= useNavigate()
+    const {currentUser} = useAppSelector(state => state.authReducer);
+    const navigate = useNavigate()
+    const {pathname} = useLocation();
+    const dispatch = useAppDispatch();
     return (
-        <Box sx={{flexGrow: 1}}>
+        <Box>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: {xs: 'none', md: 'flex'},
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >CATALOG
-                    </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <TypographyAH5 to={"/"}>CATALOG
+                    </TypographyAH5>
+                    <FlexBox>
                         <Button
-                            onClick={()=>{navigate("movies")}}
-                            sx={{ my: 2, color: 'white', display: 'block' }}
+                            onClick={() => {
+                                navigate("/movies")
+                            }}
+                            sx={{my: 2, color: 'white', display: 'block'}}
                         >Movies
                         </Button>
                         <Button
-                            onClick={()=>{navigate("genres")}}
-                            sx={{ my: 2, color: 'white', display: 'block' }}
+                            onClick={() => {
+                                navigate("/genres")
+                            }}
+                            sx={{my: 2, color: 'white', display: 'block'}}
                         >Genres
                         </Button>
-                    </Box>
+                    </FlexBox>
                     <Search>
                         <SearchIconWrapper>
-                            <SearchIcon />
+                            <SearchIcon/>
                         </SearchIconWrapper>
                         <StyledInputBase
                             placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
+                            inputProps={{'aria-label': 'search'}}
+                            onChange={debounce((event) => {
+                                if (event.target.value === "") {
+                                    navigate('/movies')
+                                } else {
+                                    dispatch(queryParamsActions.setSearchQuery(event.target.value))
+                                    if (!(pathname === '/search')) {
+                                        navigate('/search')
+                                    }
+                                }
+                            }, 1000)
+                            }
                         />
                     </Search>
-                    <Box sx={{flexGrow: 1}}/>
-                    <Box sx={{display: {xs: 'none', md: 'flex'}}}>
-                        <IconButton size="large" color="inherit" onClick={() => {
-                            if (mode === 'light') {
-                                setMode('dark');
-                            } else {
-                                setMode('light');
-                            }
-                        }}>
-                            {mode === "light" ? <DarkModeIcon/> : <LightModeTwoToneIcon/>}
-                        </IconButton>
-                        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="error">
-                                <MailIcon/>
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={17} color="error">
-                                <NotificationsIcon/>
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-haspopup="true"
-                            color="inherit"
-                        ><AccountCircle/>
-                        </IconButton>
+                    <Box sx={{display: {xs: 'flex'}}}>
+                        <MaterialUISwitch sx={{m: 1}}
+                                          defaultChecked
+                                          onClick={() => {
+                                              if (mode === 'light') {
+                                                  setMode('dark');
+                                              } else {
+                                                  setMode('light');
+                                              }
+                                          }}/>
                     </Box>
-                    <Box sx={{display: {xs: 'flex', md: 'none'}}}>
-                        <IconButton
-                            size="large"
-                            aria-label="show more"
-                            aria-haspopup="true"
-                            color="inherit"
-                        >
-                        </IconButton>
-                    </Box>
+
+                    {currentUser ? <AuthUser/> : <UnAuthUser/>}
                 </Toolbar>
             </AppBar>
         </Box>
-    );
+    )
+        ;
 };
 
 export {Header};

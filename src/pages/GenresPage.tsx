@@ -1,26 +1,23 @@
-import {useLoaderData} from "react-router-dom";
-
 import {Genres, Movies} from "../components";
-import {IGenresData} from "../interfaces";
-import {Box} from "@mui/material";
+import {Box, Container} from "@mui/material";
 
 
 const GenresPage = () => {
-    const {data} = useLoaderData() as IGenresData
+
     return (
-        <Box sx={{
+        <Container sx={{
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'space-between',
-            margin: "2vw 2vh"
+            margin: "1vh 1vw"
         }}>
-            <Genres genres={data.genres}/>
+            <Genres/>
             <Box sx={{
-                width: "80vw"
+                width: "73vw"
             }}>
                 <Movies/>
             </Box>
-        </Box>
+        </Container>
     );
 };
 

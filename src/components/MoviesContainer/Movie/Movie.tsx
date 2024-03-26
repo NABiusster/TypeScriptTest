@@ -6,10 +6,10 @@ import {
     CardActionArea,
     CardActions,
     CardMedia,
-    Rating,
-    Typography
+    Link,
+    Rating
 } from "@mui/material";
-import {Link} from "react-router-dom";
+import {CardTitle} from "./styles";
 
 interface IProps extends PropsWithChildren {
     movie: IMovie
@@ -18,19 +18,22 @@ interface IProps extends PropsWithChildren {
 const Movie: FC<IProps> = ({movie}) => {
     const {id, title, poster_path, vote_average} = movie
     return (
-        <Link to={`${id.toString()}`}>
-            <Card elevation={8} sx={{maxWidth: 200}}>
+        <Link  href={`/movies/${id.toString()}`} underline='none'>
+            <Card elevation={12}
+                  sx={{ maxWidth:'15vw', margin: "2vh 1vw"}}>
                 <CardActionArea>
                     <CardMedia
-                        sx={{height: 280}}
-                        image={`https://image.tmdb.org/t/p/w500${poster_path}`}
+                        component="img"
+                        sx={{ width: '100%'}}
+                        image={poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}`:
+                    'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'}
                         title={title}
                     />
-                    <Typography gutterBottom variant="overline" component="div">
+                    <CardTitle>
                         {title}
-                    </Typography>
+                    </CardTitle>
                     <CardActions>
-                        <Rating defaultValue={vote_average} max={10} precision={0.5} readOnly size="medium"/>
+                        <Rating value={vote_average} max={10} precision={0.5} readOnly size="medium"/>
                     </CardActions>
                 </CardActionArea>
             </Card>

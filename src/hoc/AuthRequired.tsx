@@ -1,0 +1,33 @@
+import {FC, PropsWithChildren} from "react";
+import {Navigate, useLocation} from "react-router-dom";
+
+import {authService} from "../services";
+import {useAppDispatch, useAppSelector} from "../hooks";
+import {authActions} from "../store";
+
+interface IProps extends PropsWithChildren {
+
+}
+
+const AuthRequired: FC<IProps> = ({children}) => {
+    let access = authService.getToken();
+    const {currentUser} = useAppSelector(state => state.authReducer);
+    const dispatch = useAppDispatch();
+    if ((access) && (!currentUser)) {
+        authService.deleteToken()
+        dispatch(authActions.logout)
+        access=null
+    }
+    const {pathname} = useLocation();
+
+    if (!access) {
+        return <Navigate to={'/login'} state={{pathname}}/>
+    }
+    return (
+        <>
+            {children}
+        </>
+    );
+};
+
+export {AuthRequired};

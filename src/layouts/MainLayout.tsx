@@ -11,12 +11,11 @@ import {CssBaseline} from "@mui/material";
 const theme = extendTheme();
 
 const MainLayout = () => {
-
     return (
         <CssVarsProvider theme={theme} defaultMode="dark">
-            <CssBaseline />
-                <Header/>
-                <Outlet/>
+            <CssBaseline/>
+            <Header/>
+            <Outlet/>
         </CssVarsProvider>
     );
 };

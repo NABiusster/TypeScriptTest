@@ -1,46 +1,55 @@
-import axios from "axios";
-import {FC, PropsWithChildren, useEffect, useState} from "react";
-import {Box, Pagination} from "@mui/material";
+import {Backdrop, Card, CircularProgress, Pagination} from "@mui/material";
+import {useEffect} from "react";
+import {useLocation} from "react-router-dom";
 
-import {IMovieRes} from "../../../interfaces";
-import {moviesService} from "../../../services";
 import {Movie} from "../Movie";
-import {usePagination} from "../../../hooks";
+import {moviesActions, queryParamsActions} from "../../../store";
+import {MoviesContainer} from "./styles";
+import {useAppDispatch, useAppSelector, useQueryParams} from "../../../hooks";
 
-interface IProps extends PropsWithChildren {
-
-}
-const Movies:FC<IProps> = () => {
-    const [movies, setMovies] = useState<IMovieRes>({page: 1, total_pages: 1, total_results: 0, results: []})
-    const {page, handlePagination} = usePagination();
+const Movies = () => {
+    const {isLoading} = useAppSelector(state => state.loadingReducer)
+    const {movies, total_pages} = useAppSelector(state => state.movies)
+    const {page} = useAppSelector(state => state.queryParams)
+    const dispatch = useAppDispatch()
+    const {pathname} = useLocation();
+    const searchParams = useQueryParams(pathname)
     useEffect(() => {
-        try {
-            moviesService.getAll(+page).then((({data}) => setMovies(data)))    
-        }catch (e) {
-            if (axios.isAxiosError(e) && e.response) {
-                console.log(e.response.data.message)
-            } else console.log(e)
+        if (pathname === '/search') {
+            dispatch(moviesActions.searchMovies(searchParams))
+        } else {
+            dispatch(moviesActions.getMovies(searchParams))
         }
-        
-    }, [page]);
-    return (
-        <div>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent:'space-between',
-                    '& > :not(style)': {
-                        m: "2vw 2vh",
-                        width: "18vw",
-                        // height: 400,
-                    },
-                }}
-            >
-                {movies.results.map(movie => <Movie key={movie.id} movie={movie}/>)}
-            </Box>
-            <Pagination count={movies.total_pages} page={page} onChange={handlePagination} showFirstButton showLastButton/>
-        </div>
-    );
-};
-export {Movies};
+    }, [dispatch, searchParams, pathname,]);
+    if (isLoading) {
+        return (
+            <Backdrop open={isLoading}>
+                <CircularProgress/>
+            </Backdrop>)
+    } else if (movies.length === 0) {
+        return (
+            <MoviesContainer>
+                <div>Nothing found</div>
+            </MoviesContainer>
+        )
+    } else {
+        return (
+            <div>
+                <MoviesContainer>
+                    {movies.map(movie => <Movie key={movie.id} movie={movie}/>)}
+                </MoviesContainer>
+                <Card elevation={10}>
+                <Pagination
+                    count={total_pages}
+                            page={page}
+                            onChange={(_, page) => {
+                                dispatch(queryParamsActions.setPage(page))
+                            }}
+                            showFirstButton
+                            showLastButton/>
+                </Card>
+            </div>
+        )
+    }
+}
+export {Movies}

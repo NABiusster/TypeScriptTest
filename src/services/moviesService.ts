@@ -1,11 +1,12 @@
 import {apiService} from "./apiService";
 import {IRes} from "../types";
-import {IGenre, IMovieDetails, IMovieRes} from "../interfaces";
+import {IGenre, IMovie, IMovieDetails, IMovieRes} from "../interfaces";
 import {urls} from "../constants";
 
 const moviesService = {
-    getAll: (page: number): IRes<IMovieRes> => apiService.get(urls.movies.all, {params: {page: page}}),
+    getMovies: (params: URLSearchParams): IRes<IMovieRes<IMovie>> => apiService.get(urls.movies.baseURL, {params}),
     getById: (id: number): IRes<IMovieDetails> => apiService.get(urls.movies.byId(id)),
-    getGenres:():IRes<IGenre>=>apiService.get(urls.genres.all)
+    getGenres: (): IRes<IGenre> => apiService.get(urls.genres),
+    searchMovies: (params: URLSearchParams): IRes<IMovieRes<IMovie>> => apiService.get(urls.search, {params})
 }
 export {moviesService}
