@@ -4,15 +4,6 @@ import {useAppSelector} from "./useRedux";
 const useQueryParams = (pathname: string): URLSearchParams => {
 
     const {page, with_genres, query} = useAppSelector(state => state.queryParams)
-    // const setSearchParams = (key: string) => {
-    //     const param = searchParams.get(key)
-    //     if (param.length === 0) {
-    //         searchParams.delete(key)
-    //     } else {
-    //         searchParams.set('query', query)
-    //     }
-    //
-    // }
 
     return useMemo(
         () => {

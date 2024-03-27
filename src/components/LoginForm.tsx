@@ -17,7 +17,6 @@ const LoginForm = () => {
     const {isLoading} = useAppSelector(state => state.loadingReducer)
     const login: SubmitHandler<IAuth> = async (user) => {
         const {meta: {requestStatus}} = await dispatch(authActions.login({user}));
-        console.log(user);
         if (requestStatus === 'fulfilled') {
             navigate(state?.pathname || '/movies')
         }

@@ -13,10 +13,15 @@ const AuthRequired: FC<IProps> = ({children}) => {
     let access = authService.getToken();
     const {currentUser} = useAppSelector(state => state.authReducer);
     const dispatch = useAppDispatch();
+    console.log(access);
+    console.log(currentUser);
     if ((access) && (!currentUser)) {
-        authService.deleteToken()
-        dispatch(authActions.logout)
-        access=null
+    //     if (access) {
+    //         dispatch(authActions.currentUser)
+    //     } else {
+            authService.deleteToken()
+            dispatch(authActions.logout)
+        // }
     }
     const {pathname} = useLocation();
 

@@ -11,11 +11,11 @@ const authService = {
         const {username, password} = user
         if (username === fakeAuth.username && password === fakeAuth.password) {
              this.setToken({success:true, request_token:Authorization})
-             const {data: me} = await this.me();
-            return me
+             const {data: currentUser} = await this.currentUser();
+            return currentUser
         }
     },
-    me(): IRes<IUser> {
+    currentUser(): IRes<IUser> {
         return apiService.get(urls.auth.getUser)
     },
 

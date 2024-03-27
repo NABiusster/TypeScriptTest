@@ -38,11 +38,11 @@ const login = createAsyncThunk<IUser,{ user: IAuth }>(
         }
     }
 )
-const me = createAsyncThunk<IUser, void>(
+const currentUser = createAsyncThunk<IUser, void>(
     'authSlice/me',
     async (_, {rejectWithValue}) => {
         try {
-            const {data} = await authService.me();
+            const {data} = await authService.currentUser();
             return data
         } catch (e) {
             const err = e as AxiosError
@@ -77,7 +77,7 @@ const authSlice = createSlice({
             .addCase(login.rejected, state => {
                 state.loginError = 'Wrong username or password'
             })
-            .addCase(me.fulfilled, (state, action) => {
+            .addCase(currentUser.fulfilled, (state, action) => {
                 state.currentUser = action.payload
             })
             .addCase(logout.fulfilled, state => {
@@ -95,7 +95,8 @@ const authActions = {
     ...actions,
     register,
     login,
-    logout
+    logout,
+    currentUser
 }
 
 export {
