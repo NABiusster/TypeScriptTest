@@ -2,7 +2,7 @@ import {Backdrop, Card, CardContent, CardHeader, CardMedia, CircularProgress, St
 import {GenreChip} from "../../GenresContainer";
 import {useAppDispatch, useAppSelector} from "../../../hooks";
 import {useParams} from "react-router-dom";
-import {useCallback, useEffect, useMemo} from "react";
+import {useMemo} from "react";
 import {moviesActions} from "../../../store";
 
 const MovieDetails = () => {

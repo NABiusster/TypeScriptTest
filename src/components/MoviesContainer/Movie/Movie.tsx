@@ -1,14 +1,8 @@
 import {FC, PropsWithChildren} from "react";
 
 import {IMovie} from "../../../interfaces";
-import {Link, useNavigate} from "react-router-dom";
-import {
-    Card,
-    CardActionArea,
-    CardActions,
-    CardMedia,
-    Rating
-} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {Card, CardActionArea, CardActions, CardMedia, Rating} from "@mui/material";
 import {CardTitle} from "./styles";
 
 interface IProps extends PropsWithChildren {
